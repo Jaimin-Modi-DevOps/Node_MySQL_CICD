@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Library Desk Booking</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 40px;
+      background: #f4f4f4;
+    }
+
+    input, select, button {
+      padding: 10px;
+      margin: 5px;
+      width: 250px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #bookings {
+      margin-top: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>📚 Library Desk Booking</h2>
+
+  <!-- Booking Form -->
+  <input type="text" id="username" placeholder="Enter Username"><br>
+
+  <select id="desk">
+    <option value="">Select Desk</option>
+    <option value="Desk 1">Desk 1</option>
+    <option value="Desk 2">Desk 2</option>
+    <option value="Desk 3">Desk 3</option>
+    <option value="Desk 4">Desk 4</option>
+  </select><br>
+
+  <input type="text" id="slot" placeholder="Enter Time Slot (e.g. 10AM-12PM)"><br>
+
+  <button onclick="bookDesk()">📌 Book Desk</button>
+
+  <hr>
+
+  <!-- View Bookings -->
+  <h3>📋 All Bookings</h3>
+  <button onclick="getBookings()">Show All Bookings</button>
+
+  <div id="bookings"></div>
+
+<script>
+
+  // ➕ Book Desk
+  async function bookDesk() {
+    const username = document.getElementById('username').value.trim();
+    const desk = document.getElementById('desk').value;
+    const slot = document.getElementById('slot').value.trim();
+
+    if (!username || !desk || !slot) {
+      alert("⚠️ Please fill all fields");
+      return;
+    }
+
+    try {
+      const response = await fetch('/book', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, desk, slot })
+      });
+
+      const result = await response.text();
+      alert("✅ " + result);
+
+      // clear inputs after booking
+      document.getElementById('username').value = '';
+      document.getElementById('desk').value = '';
+      document.getElementById('slot').value = '';
+
+    } catch (error) {
+      console.error("Error:", error);
+      alert("❌ Failed to book desk");
+    }
+  }
+
+  // 📖 Get All Bookings
+  async function getBookings() {
+    try {
+      const res = await fetch('/bookings');
+      const data = await res.json();
+
+      const container = document.getElementById('bookings');
+      container.innerHTML = '';
+
+      if (data.length === 0) {
+        container.innerHTML = "<p>⚠️ No bookings found</p>";
+        return;
+      }
+
+      data.forEach(item => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          👤 <b>${item.username}</b> booked 
+          🪑 <b>${item.desk}</b> 
+          ⏰ <b>${item.slot}</b>
+          <hr>
+        `;
+        container.appendChild(div);
+      });
+
+    } catch (error) {
+      console.error("Error:", error);
+      alert("❌ Failed to fetch bookings");
+    }
+  }
+
+</script>
+
+</body>
+</html>

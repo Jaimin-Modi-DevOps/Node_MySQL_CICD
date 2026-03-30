@@ -1,0 +1,13 @@
+# Node
+node_modules/
+
+# Env
+.env
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Logs
+*.log
