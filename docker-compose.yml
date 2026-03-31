@@ -13,7 +13,7 @@ services:
       - mysql-data:/var/lib/mysql
 
   app:
-    build: .
+    build: ./app
     container_name: node-app
     restart: always
     ports:
