@@ -35,5 +35,20 @@ pipeline {
                 '''
             }
         }
+        
+        stage('Deploy') {
+            steps {
+                 withCredentials([
+                    string(credentialsId: 'mysql-password', variable: 'MYSQL_ROOT_PASSWORD'),
+                    string(credentialsId: 'mysql-db', variable: 'MYSQL_DATABASE')
+            ])  {
+                    sh '''
+                    docker-compose down || true
+                    docker-compose pull
+                    docker-compose up -d
+                    '''
+                }
+            }
+        }
     }
 }

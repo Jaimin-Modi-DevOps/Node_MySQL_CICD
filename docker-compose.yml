@@ -11,9 +11,10 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - mysql-data:/var/lib/mysql
+       # optional
 
   app:
-    build: ./app
+    image: jaiminmodi/node_mysql_cicd:latest
     container_name: node-app
     restart: always
     ports:
@@ -23,6 +24,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DB_NAME: ${MYSQL_DATABASE}
 
 volumes:
-  mysql-data: 
+  mysql-data:
